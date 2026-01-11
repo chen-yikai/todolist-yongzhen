@@ -95,6 +95,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * 通常Composable function會用大駝峰(第一格字母大寫)來命名，方便和普通function做區分
+ * 也可以試試每個頁面分不同檔案寫
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun homescreen(nav: NavHostController, modifier: Modifier = Modifier) {
@@ -173,6 +178,13 @@ fun homescreen(nav: NavHostController, modifier: Modifier = Modifier) {
                 }
             )
         }
+        /**
+         * 過於複雜的排版
+         *
+         * 避免在一個 layout 中使用多個 weight()。
+         * 你可以把這一整個 if...else 用一個 Column 包起來並設定 SpaceBetween，
+         * 或是直接把底部編輯欄放在 Scaffold 的 bottomBar 中。
+         */
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -180,9 +192,6 @@ fun homescreen(nav: NavHostController, modifier: Modifier = Modifier) {
                 .fillMaxSize()
         )
         {
-            /**
-             * 避免在一個layout中使用多個weight()，你可以把這一整個if...else用一個Column包起來並設定SpaceBetween或[weight()]
-             */
             if (notes.isEmpty()) {
                 Box(
                     modifier = Modifier
@@ -329,20 +338,16 @@ fun aboutscreen(nav: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun gamescreen(nav: NavHostController) {
+    /**
+     * 除了這種標準的作法外，有可以試試看用 <pre>key()</pre> 來做重新開始了功能，這樣就不需要儲存資料了
+     */
     var ans by remember { mutableStateOf(Random.nextInt(0, 9)) }
     val open = remember {
-        mutableStateListOf(
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false
-        )
+        mutableStateListOf<Boolean>().apply { repeat(9) { add(false) } }
     }
+    /**
+     * 原來是直接寫9個false，也可以試試看用kotlin scope來做會更彈性一些～
+     */
     var gameover by remember { mutableStateOf(false) }
     var mes by remember { mutableStateOf("") }
     Scaffold(
