@@ -97,11 +97,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun homescreen(nav: NavHostController, modifier: Modifier = Modifier){
+fun homescreen(nav: NavHostController, modifier: Modifier = Modifier) {
     var notetitle by remember { mutableStateOf("") }
     var note by remember { mutableStateOf("") }
-    val notes = remember { mutableStateListOf<Pair<String,String>>() }
-    var edit by remember { mutableStateOf(false)}
+    val notes = remember { mutableStateListOf<Pair<String, String>>() }
+    var edit by remember { mutableStateOf(false) }
     var editnote by remember { mutableStateOf(-1) }
     var edititle by remember { mutableStateOf("") }
     var edittext by remember { mutableStateOf("") }
@@ -113,126 +113,153 @@ fun homescreen(nav: NavHostController, modifier: Modifier = Modifier){
             TopAppBar(
                 title = { Text("我的筆記") },
                 actions = {
-                    IconButton(onClick = { nav.navigate("gamescreen") } )
+                    IconButton(onClick = { nav.navigate("gamescreen") })
                     { Icon(imageVector = Icons.Default.VideogameAsset, contentDescription = "") }
-                    IconButton(onClick = { nav.navigate("aboutscreen") } )
+                    IconButton(onClick = { nav.navigate("aboutscreen") })
                     { Icon(imageVector = Icons.Default.Info, contentDescription = "") }
                 }
             )
         },
-        floatingActionButton = { FloatingActionButton( onClick = {
-            if (notetitle.isNotBlank() && note.isNotBlank())
-        {
-            notes.add(Pair(notetitle, note))
-            notetitle = ""
-            note = ""
-        }else{
-            scope.launch {
-                snackbar.showSnackbar("筆記資訊不完整")
-            }
-        } }, modifier = Modifier.offset(y = (-185).dp))
-        { Icon(Icons.Default.Add, contentDescription = "")} }
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                if (notetitle.isNotBlank() && note.isNotBlank()) {
+                    notes.add(Pair(notetitle, note))
+                    notetitle = ""
+                    note = ""
+                } else {
+                    scope.launch {
+                        snackbar.showSnackbar("筆記資訊不完整")
+                    }
+                }
+            }, modifier = Modifier.offset(y = (-185).dp))
+            { Icon(Icons.Default.Add, contentDescription = "") }
+        }
     ) { innerPadding ->
-        if (edit){
-            AlertDialog(onDismissRequest = { edit = false},
-                title = {Text("編輯筆記")},
-                text = {Column{OutlinedTextField(value = edititle,
-                    onValueChange = {edititle = it},
-                    label = {Text("標題")},
-                    modifier = Modifier.fillMaxWidth())
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(value = edittext,
-                    onValueChange = {edittext = it},
-                    label = {Text("敘述")},
-                    modifier = Modifier.fillMaxWidth()) }
-                }, confirmButton = { TextButton(onClick =
-                    {
-                        if (editnote >= 0)
-                        {
-                            notes.removeAt(editnote)
-                            notes.add(editnote, Pair(edititle,edittext))
-                        }
-                        edit = false
-                    }){ Text("編輯")}
+        if (edit) {
+            AlertDialog(
+                onDismissRequest = { edit = false },
+                title = { Text("編輯筆記") },
+                text = {
+                    Column {
+                        OutlinedTextField(
+                            value = edititle,
+                            onValueChange = { edititle = it },
+                            label = { Text("標題") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = edittext,
+                            onValueChange = { edittext = it },
+                            label = { Text("敘述") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }, confirmButton = {
+                    TextButton(
+                        onClick =
+                            {
+                                if (editnote >= 0) {
+                                    notes.removeAt(editnote)
+                                    notes.add(editnote, Pair(edititle, edittext))
+                                }
+                                edit = false
+                            }) { Text("編輯") }
                 }, dismissButton = {
-                    TextButton(onClick = {edit = false})
+                    TextButton(onClick = { edit = false })
                     {
                         Text("取消")
                     }
                 }
             )
         }
-        Column(modifier = Modifier
-            .padding(innerPadding)
-            .padding(16.dp)
-            .fillMaxSize())
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
+                .fillMaxSize()
+        )
         {
-            if (notes.isEmpty()){
-                Box(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                    contentAlignment = Alignment.Center)
-                {Text("你還沒有建立任何清單")}
-            }else{
-                LazyColumn(modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+            if (notes.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                )
+                { Text("你還沒有建立任何清單") }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
-                ){
-                    itemsIndexed(notes){ index,noteitem->
-                        Card(modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable
-                            {
-                                editnote = index
-                                edititle = noteitem.first
-                                edittext = noteitem.second
-                                edit = true
-                            },
-                            shape = RoundedCornerShape(16.dp))
+                ) {
+                    itemsIndexed(notes) { index, noteitem ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable
+                                {
+                                    editnote = index
+                                    edititle = noteitem.first
+                                    edittext = noteitem.second
+                                    edit = true
+                                },
+                            shape = RoundedCornerShape(16.dp)
+                        )
                         {
-                            Row(modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween)
+                            Row(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            )
                             {
                                 Column(Modifier.weight(1f))
                                 {
-                                    Text(text = noteitem.first,
-                                         fontSize = 24.sp,
-                                         fontWeight = FontWeight.Bold)
+                                    Text(
+                                        text = noteitem.first,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                     Spacer(Modifier.height(4.dp))
-                                    Text(text = noteitem.second,
-                                         fontSize = 16.sp)
+                                    Text(
+                                        text = noteitem.second,
+                                        fontSize = 16.sp
+                                    )
                                 }
-                                IconButton(onClick = {notes.remove(noteitem)}) {
-                                    Icon(Icons.Default.Delete,contentDescription ="")
+                                IconButton(onClick = { notes.remove(noteitem) }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "")
                                 }
                             }
                         }
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Card(modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp),
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(contentColor = Color.White))
+                colors = CardDefaults.cardColors(contentColor = Color.White)
+            )
             {
                 Column(modifier = Modifier.padding(16.dp))
                 {
-                    OutlinedTextField(value = notetitle,
-                        onValueChange = {notetitle = it},
-                        label = { Text("筆記標題")},
+                    OutlinedTextField(
+                        value = notetitle,
+                        onValueChange = { notetitle = it },
+                        label = { Text("筆記標題") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(24.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(value = note,
-                        onValueChange = {note = it},
-                        label = { Text("筆記敘述")},
+                    OutlinedTextField(
+                        value = note,
+                        onValueChange = { note = it },
+                        label = { Text("筆記敘述") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(60.dp),
@@ -249,23 +276,30 @@ fun homescreen(nav: NavHostController, modifier: Modifier = Modifier){
 fun aboutscreen(nav: NavHostController) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("關於") },
-                navigationIcon = {IconButton(onClick = {nav.popBackStack()})
-                { Icon(Icons.Default.ArrowBack,null)}}
+            TopAppBar(
+                title = { Text("關於") },
+                navigationIcon = {
+                    IconButton(onClick = { nav.popBackStack() })
+                    { Icon(Icons.Default.ArrowBack, null) }
+                }
             )
         }
-    ) {paddingValues ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally)
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
         {
-            Image(painter = painterResource(R.drawable.logo),
+            Image(
+                painter = painterResource(R.drawable.logo),
                 contentDescription = "",
                 modifier = Modifier
                     .size(200.dp)
-                    .padding(bottom = 6.dp))
+                    .padding(bottom = 6.dp)
+            )
             Text(
                 text = "Skills Reminder",
                 fontSize = 28.sp,
@@ -292,24 +326,41 @@ fun aboutscreen(nav: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun gamescreen(nav: NavHostController) {
-    var ans by remember { mutableStateOf(Random.nextInt(0,9)) }
-    val open = remember { mutableStateListOf(false,false,false,false,false,false,false,false,false) }
+    var ans by remember { mutableStateOf(Random.nextInt(0, 9)) }
+    val open = remember {
+        mutableStateListOf(
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+        )
+    }
     var gameover by remember { mutableStateOf(false) }
     var mes by remember { mutableStateOf("") }
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("遊戲") },
-                navigationIcon = {IconButton(onClick = {nav.popBackStack()})
-                { Icon(Icons.Default.ArrowBack,null)}}
+            TopAppBar(
+                title = { Text("遊戲") },
+                navigationIcon = {
+                    IconButton(onClick = { nav.popBackStack() })
+                    { Icon(Icons.Default.ArrowBack, null) }
+                }
             )
         }
-    ) {innerPadding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .padding(16.dp),
-               horizontalAlignment = Alignment.CenterHorizontally,
-               verticalArrangement = Arrangement.Center)
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        )
         {
             Text(
                 text = "鞋子在哪裡",
@@ -323,7 +374,7 @@ fun gamescreen(nav: NavHostController) {
                 color = Color.Gray,
                 modifier = Modifier.padding(8.dp)
             )
-            if (mes.isNotEmpty()){
+            if (mes.isNotEmpty()) {
                 Text(
                     text = mes,
                     fontSize = 24.sp,
@@ -331,49 +382,55 @@ fun gamescreen(nav: NavHostController) {
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
             }
-                for (row in 0..2){
-                    Row (horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically){
-                        for (col in 0..2){
-                            val index = row * 3 + col
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Button(onClick =
-                                    { if(gameover)return@Button
+            for (row in 0..2) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    for (col in 0..2) {
+                        val index = row * 3 + col
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Button(
+                                onClick =
+                                    {
+                                        if (gameover) return@Button
                                         open[index] = true
-                                        if (index == ans)
-                                        {
+                                        if (index == ans) {
                                             gameover = true
                                             mes = "找到了!"
                                         }
-                                    },modifier = Modifier.size(100.dp).padding(4.dp),
-                                    shape = RectangleShape,
-                                    enabled = !open[index]
-                                ){
-                                    if (open[index] && index == ans)
-                                    {
-                                        Image(
-                                            painter = painterResource(R.drawable.shose),
-                                            contentDescription = "",
-                                            modifier = Modifier.size(80.dp)
-                                        )
-                                    }
+                                    }, modifier = Modifier
+                                    .size(100.dp)
+                                    .padding(4.dp),
+                                shape = RectangleShape,
+                                enabled = !open[index]
+                            ) {
+                                if (open[index] && index == ans) {
+                                    Image(
+                                        painter = painterResource(R.drawable.shose),
+                                        contentDescription = "",
+                                        modifier = Modifier.size(80.dp)
+                                    )
                                 }
                             }
                         }
                     }
                 }
-                if (gameover){
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Button({ans = Random.nextInt(0,9)
-                        for (i in 0 until 9) open[i] = false
-                        gameover = false
-                        mes = ""
-                    }) {
-                        Text("重新開始")
-                    }
+            }
+            if (gameover) {
+                Spacer(modifier = Modifier.height(20.dp))
+                Button({
+                    ans = Random.nextInt(0, 9)
+                    for (i in 0 until 9) open[i] = false
+                    gameover = false
+                    mes = ""
+                }) {
+                    Text("重新開始")
                 }
             }
         }
     }
+}
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -382,50 +439,60 @@ fun navHost() {
     AnimatedNavHost(
         navController = navController,
         startDestination = "homescreen"
-    ) {composable("homescreen")
-      { homescreen(navController) }
-        composable (
+    ) {
+        composable("homescreen")
+        { homescreen(navController) }
+        composable(
             route = "aboutscreen",
-            enterTransition = {slideInVertically(
-                initialOffsetY = { it },
-                animationSpec = tween(400)
-            ) },
-            exitTransition = { slideOutVertically(
+            enterTransition = {
+                slideInVertically(
+                    initialOffsetY = { it },
+                    animationSpec = tween(400)
+                )
+            },
+            exitTransition = {
+                slideOutVertically(
                     targetOffsetY = { it },
                     animationSpec = tween(400)
                 )
             },
-            popEnterTransition = { slideInVertically(
+            popEnterTransition = {
+                slideInVertically(
                     initialOffsetY = { -it },
                     animationSpec = tween(400)
                 )
             },
-            popExitTransition = { slideOutVertically(
+            popExitTransition = {
+                slideOutVertically(
                     targetOffsetY = { it },
                     animationSpec = tween(400)
                 )
             }
-        ){
+        ) {
             aboutscreen(navController)
         }
         composable(
             route = "gamescreen",
-            enterTransition = { slideInHorizontally(
+            enterTransition = {
+                slideInHorizontally(
                     initialOffsetX = { it },
                     animationSpec = tween(400)
                 )
             },
-            exitTransition = { slideOutHorizontally(
+            exitTransition = {
+                slideOutHorizontally(
                     targetOffsetX = { -it },
                     animationSpec = tween(400)
                 )
             },
-            popEnterTransition = { slideInHorizontally(
+            popEnterTransition = {
+                slideInHorizontally(
                     initialOffsetX = { -it },
                     animationSpec = tween(400)
                 )
             },
-            popExitTransition = { slideOutHorizontally(
+            popExitTransition = {
+                slideOutHorizontally(
                     targetOffsetX = { it },
                     animationSpec = tween(400)
                 )
