@@ -180,6 +180,9 @@ fun homescreen(nav: NavHostController, modifier: Modifier = Modifier) {
                 .fillMaxSize()
         )
         {
+            /**
+             * 避免在一個layout中使用多個weight()，你可以把這一整個if...else用一個Column包起來並設定SpaceBetween或[weight()]
+             */
             if (notes.isEmpty()) {
                 Box(
                     modifier = Modifier
