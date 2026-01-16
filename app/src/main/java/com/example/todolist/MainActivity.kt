@@ -96,8 +96,8 @@ class MainActivity : ComponentActivity() {
 }
 
 /**
- * 通常Composable function會用大駝峰(第一格字母大寫)來命名，方便和普通function做區分
- * 也可以試試每個頁面分不同檔案寫
+ * 通常Composable function會用大駝峰(第一格字母大寫)的方式來命名，方便和普通function做區分
+ * 也可以試試看把每一個頁面分不同檔案來寫
  */
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -339,15 +339,15 @@ fun aboutscreen(nav: NavHostController) {
 @Composable
 fun gamescreen(nav: NavHostController) {
     /**
-     * 除了這種標準的作法外，有可以試試看用 <pre>key()</pre> 來做重新開始了功能，這樣就不需要儲存資料了
+     * 除了這種標準的作法外，有可以試試看用 key() 來做重新開始的功能，這樣就不需要儲存每一格的資料了
      */
     var ans by remember { mutableStateOf(Random.nextInt(0, 9)) }
     val open = remember {
         mutableStateListOf<Boolean>().apply { repeat(9) { add(false) } }
+        /**
+         * ＾原本你是直接寫9個false，也可以試試看用kotlin scope來做，會更彈性一些～
+         */
     }
-    /**
-     * 原來是直接寫9個false，也可以試試看用kotlin scope來做會更彈性一些～
-     */
     var gameover by remember { mutableStateOf(false) }
     var mes by remember { mutableStateOf("") }
     Scaffold(
